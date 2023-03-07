@@ -3,20 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AstroDodge</title>
+    <title>{% block title %}{{ title }}{% endblock title %}</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+      integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <section class="section">
+      <div class="container">{% include 'navigation.html' %}</div>
+    </section>
   </head>
   <body>
     <section class="section">
-      <div class="container">{% block nav %}{% endblock %}</div>
+      <div class="container">{% block content %}{% endblock %}</div>
     </section>
   </body>
-  <footer class="footer">
-    <div class="content has-text-centered">
-      <p>Discover information about near Earth objects.</p>
-    </div>
-  </footer>
+  <section class="section">
+    <div class="container">{% include 'footer.html' %}</div>
+  </section>
 </html>

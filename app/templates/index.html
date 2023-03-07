@@ -1,4 +1,5 @@
-{% extends 'nav.html' %} {% block list %} {% for card in space_list %}
+{% extends "base.html" %}
+{% block content %} {% for card in space_list|sort(attribute="dist")%}
 <div class="card">
   <div class="card-content">
     <div class="media">

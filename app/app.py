@@ -7,7 +7,7 @@ data = nasa.format()
 
 @app.route("/")
 def index():
-    return render_template("index.html", space_list=data)
+    return render_template("index.html", space_list=data, title="AstroDodge")
 
 
 @app.route("/about")
