@@ -15,5 +15,15 @@ def about():
     return render_template("about.html")
 
 
+@app.route("/login")
+def login():
+    return "Hello World"
+
+
+@app.route("/register")
+def register():
+    return "Goodbye"
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

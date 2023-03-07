@@ -1,7 +1,7 @@
 import requests, requests_cache
 from dataclasses import dataclass
 
-AU_TO_KM_CONVERSION = 1.495979e8
+AU_TO_KM_CONVERSION = 1.49e8
 
 
 @dataclass
@@ -41,11 +41,7 @@ def fetch():
 def format():
     requests_cache.install_cache("astro", backend="sqlite", expire_after=180)
     space_response = fetch()
-    space = []
-
-    for item in space_response:
-        obj = SpaceObject(**item)
-        space.append(obj)
+    space = [SpaceObject(**item) for item in space_response]
 
     return space
 
