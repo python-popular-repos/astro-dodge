@@ -1,10 +1,18 @@
-from flask import Flask
+from flask import Flask, render_template
+import nasa
 
 app = Flask(__name__)
+data = nasa.format()
+
 
 @app.route("/")
 def index():
-    return "<p>Hello, World!</p>"
+    return render_template("index.html", space_list=data)
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 
 if __name__ == "__main__":

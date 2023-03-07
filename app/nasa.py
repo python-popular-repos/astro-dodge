@@ -1,18 +1,7 @@
 import requests, requests_cache
 from dataclasses import dataclass
 
-
-def fetch():
-    base_url = f"https://ssd-api.jpl.nasa.gov/cad.api"
-    payload = {"dist-min": "1LD", "date-min": "now", "date-max": "+7", "limit": 10}
-    r = requests.get(base_url, params=payload)
-    r_data = r.json()["data"]
-    r_fields = r.json()["fields"]
-    readable = [dict(zip(r_fields, data)) for data in r_data]
-    return readable
-
-
-requests_cache.install_cache("astro", backend="sqlite", expire_after=180)
+AU_TO_KM_CONVERSION = 1.495979e8
 
 
 @dataclass
@@ -30,13 +19,35 @@ class SpaceObject:
     h: float
 
     def __post_init__(self):
-        self.dist = float(self.dist)
+        self.dist = float(self.dist) * AU_TO_KM_CONVERSION
         self.dist_min = float(self.dist_min)
         self.dist_max = float(self.dist_max)
         self.dist_min = float(self.dist_min)
         self.v_rel = float(self.v_rel)
         self.v_inf = float(self.v_inf)
         self.h = float(self.h)
+
+
+def fetch():
+    base_url = f"https://ssd-api.jpl.nasa.gov/cad.api"
+    payload = {"dist-min": "1LD", "date-min": "now", "date-max": "+7", "limit": 10}
+    r = requests.get(base_url, params=payload)
+    r_data = r.json()["data"]
+    r_fields = r.json()["fields"]
+    readable = [dict(zip(r_fields, data)) for data in r_data]
+    return readable
+
+
+def format():
+    requests_cache.install_cache("astro", backend="sqlite", expire_after=180)
+    space_response = fetch()
+    space = []
+
+    for item in space_response:
+        obj = SpaceObject(**item)
+        space.append(obj)
+
+    return space
 
 
 if __name__ == "__main__":
@@ -68,10 +79,3 @@ if __name__ == "__main__":
             "h": "25.87",
         },
     ]
-    test2 = fetch()
-
-    res = []
-    for item in test2:
-        y = SpaceObject(**item)
-        res.append(y)
-    print(res)
