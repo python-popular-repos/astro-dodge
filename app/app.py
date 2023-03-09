@@ -15,14 +15,19 @@ def about():
     return render_template("about.html")
 
 
+@app.route("/list")
+def space_list():
+    return render_template("list.html")
+
+
 @app.route("/login")
 def login():
-    return "Hello World"
+    return render_template("login.html")
 
 
 @app.route("/register")
 def register():
-    return "Goodbye"
+    return render_template("register.html")
 
 
 if __name__ == "__main__":

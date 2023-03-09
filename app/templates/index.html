@@ -1,19 +1,32 @@
 {% extends "base.html" %}{% block content %}
-{% for card in space_list|sort(attribute="dist")%}
-<div class="card">
-  <div class="card-content">
-    <div class="media">
-      <div class="media-content">
-        <p class="title is-4">{{ card.des }}</p>
-      </div>
-    </div>
 
-    <div class="content">
-      <p>Time of Closest Approach: {{ card.cd }}</p>
-      <p>Velocity: {{ card.v_inf }} km/s</p>
-      <p>Current distance from Earth: {{ card.dist }} km</p>
+<section class="hero is-large is-warning">
+  <div class="hero-body">
+    <p class="title">AstroDodge</p>
+    <p class="subtitle">
+      Find and track space objects that are within one Lunar Distance
+    </p>
+  </div>
+</section>
+
+{% for card in space_list %}
+<div class="columns">
+  <div class="column is-three-fifths is-offset-one-fifth">
+    <div class="card">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-content">
+            <p class="title is-4">{{ card.des }}</p>
+          </div>
+        </div>
+
+        <div class="content">
+          <p>Time of Closest Approach: {{ card.cd }}</p>
+          <p>Velocity: {{ card.v_inf }} km/s</p>
+          <p>Current distance from Earth: {{ card.dist }} km</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<br />
 {% endfor %} {% endblock %}
