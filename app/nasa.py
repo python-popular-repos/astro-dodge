@@ -39,7 +39,7 @@ def fetch():
 
 
 def format():
-    requests_cache.install_cache("astro", backend="sqlite", expire_after=180)
+    requests_cache.install_cache("astro", backend="sqlite", expire_after=10)
     space_response = fetch()
     space = [SpaceObject(**item) for item in space_response]
 
