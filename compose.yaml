@@ -3,11 +3,9 @@ services:
     build:
       context: app
       target: builder
-    # flask requires SIGINT to stop gracefully
-    # (default stop signal from Compose is SIGTERM)
     stop_signal: SIGINT
     restart: always
     ports:
-      - '8000:8000'
-    volumes:
-      - $PWD/app:/app
+    - 8001:8001
+    command: gunicorn -w 1 -b 0.0.0.0:8001 wsgi:app
+
