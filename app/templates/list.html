@@ -1,5 +1,12 @@
 {% extends "base.html" %}{% block content %}
 
+<section class="hero is-primary">
+  <div class="hero-body">
+    <p class="title">Near Earth Objects</p>
+    <p class="subtitle">A list of current space objects that have the closest orbit.</p>
+  </div>
+</section>
+
 {% for card in space_list %}
 <div class="columns">
   <div class="column is-three-fifths is-offset-one-fifth">
