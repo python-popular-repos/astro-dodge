@@ -1,8 +1,38 @@
 from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from sqlalchemy import DateTime
 import nasa
 
 app = Flask(__name__)
 data = nasa.format()
+
+app.config[
+    "SQLALCHEMY_DATABASE_URI"
+] = "postgresql://postgres:password@db:5432/mydatabase"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy()
+db.init_app(app)
+
+
+@app.before_first_request
+def create_tables():
+    print("Hopefully Creating Tables")
+    db.create_all()
+
+
+class User(db.Model):
+    __tablename__ = "astro_users"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String)
+    created_at = db.Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class Record(db.Model):
+    __tablename__ = "astro_record"
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(DateTime, nullable=False, default=datetime.utcnow)
 
 
 @app.route("/")
