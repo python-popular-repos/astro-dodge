@@ -8,26 +8,33 @@
   </div>
 </section>
 
-{% for card in space_list %}
-<div class="columns">
-  <div class="column is-three-fifths is-offset-one-fifth">
-    <div class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-content">
-            <p class="title is-4">{{ card.des }}</p>
-          </div>
-        </div>
-
-        <div class="content">
-          <p>Time of Closest Approach: {{ card.cd }}</p>
-          <p>Velocity: {{ card.v_inf }} km/s</p>
-          <p>Current distance from Earth: {{ card.dist }} km</p>
-        </div>
-      </div>
-    </div>
+<section class="hero">
+  <div class="box">
+    <p>Currently, there are {{space_list | length}} objects with a minimum single Lunar distance.</p>
   </div>
-</div>
-{% endfor %}
+</section>
 
+<section class="section is-small">
+
+  <table class="table is-striped is-fullwidth is-hoverable">
+    <thead>
+      <tr>
+        <td>Name</td>
+        <td>Closest Approach</td>
+        <td>Estimated Velocity (km/s)</td>
+        <td>Current Distance (km)</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for card in space_list|sort(attribute="dist") %}
+      <tr>
+        <td>{{ card.des }}</td>
+        <td>{{ card.cd }}</td>
+        <td>{{ card.v_inf }}</td>
+        <td>{{ card.dist }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
 {% endblock %}
