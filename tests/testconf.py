@@ -1,5 +1,5 @@
 import pytest
-from app.models import User
+from app.models import User, Record
 
 
 # Fixtures

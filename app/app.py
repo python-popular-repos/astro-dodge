@@ -1,7 +1,6 @@
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
 from models import db
-import nasa as info
+import nasa as information
 
 app = Flask(__name__)
 
@@ -29,7 +28,7 @@ def about():
 
 @app.route("/list")
 def space_list():
-    data = info.format()
+    data = information.format()
     return render_template("list.html", space_list=data, title="Space List")
 
 

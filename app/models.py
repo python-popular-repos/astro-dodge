@@ -20,8 +20,6 @@ class User(db.Model):
         * email - email address of the user
         * hashed password - hashed password (using werkzeug.security)
         * registered_on - date & time that the user registered
-
-    REMEMBER: Never store the plaintext password in a database!
     """
 
     __tablename__ = "users"
