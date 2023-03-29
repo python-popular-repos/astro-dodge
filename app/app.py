@@ -9,7 +9,7 @@ data = nasa.format()
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "postgresql://postgres:password@db:5432/mydatabase"
+] = "postgresql://postgres:password@localhost:5432/mydatabase"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy()
 db.init_app(app)
@@ -47,7 +47,7 @@ def about():
 
 @app.route("/list")
 def space_list():
-    return render_template("list.html", space_list=data)
+    return render_template("list.html", space_list=data, title="Space List")
 
 
 @app.route("/login")
@@ -61,4 +61,4 @@ def register():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8005, debug=True)

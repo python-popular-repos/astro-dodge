@@ -20,11 +20,11 @@ class SpaceObject:
 
     def __post_init__(self):
         self.dist = float(self.dist) * AU_TO_KM_CONVERSION
-        self.dist_min = float(self.dist_min)
+        self.dist_min = round(float(self.dist_min), 2)
         self.dist_max = float(self.dist_max)
         self.dist_min = float(self.dist_min)
         self.v_rel = float(self.v_rel)
-        self.v_inf = float(self.v_inf)
+        self.v_inf = round(float(self.v_inf), 2)
         self.h = float(self.h)
 
 
@@ -42,36 +42,4 @@ def format():
     requests_cache.install_cache("astro", backend="sqlite", expire_after=10)
     space_response = fetch()
     space = [SpaceObject(**item) for item in space_response]
-
     return space
-
-
-if __name__ == "__main__":
-    test1 = [
-        {
-            "des": "2023 DX",
-            "orbit_id": "1",
-            "jd": "2460006.565377386",
-            "cd": "2023-Mar-03 01:34",
-            "dist": "0.0133404519543656",
-            "dist_min": "0.0132927026501745",
-            "dist_max": "0.0133882006487615",
-            "v_rel": "13.0512222235651",
-            "v_inf": "13.0359097456893",
-            "t_sigma_f": "00:03",
-            "h": "25.87",
-        },
-        {
-            "des": "faker",
-            "orbit_id": "1",
-            "jd": "2460006.565377386",
-            "cd": "2023-Mar-03 01:34",
-            "dist": "0.0133404519543656",
-            "dist_min": "0.0132927026501745",
-            "dist_max": "0.0133882006487615",
-            "v_rel": "13.0512222235651",
-            "v_inf": "13.0359097456893",
-            "t_sigma_f": "00:03",
-            "h": "25.87",
-        },
-    ]
