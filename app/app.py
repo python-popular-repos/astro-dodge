@@ -1,13 +1,11 @@
-from flask import Flask, render_template
-from models import db
+from flask import Flask, render_template, flash, request, redirect, url_for
+from forms import RegisterForm
+from flask_login import current_user, login_required, login_user, logout_user
+from models import db, User
 import nasa as information
 
-app = Flask(__name__)
-
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = "postgresql://postgres:password@localhost:5432/mydatabase"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_pyfile("config.py")
 db.init_app(app)
 
 
@@ -37,9 +35,18 @@ def login():
     return render_template("login.html", title="Login")
 
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("register.html", title="Register")
+    # if current_user.is_authenticated:  # type: ignore
+    #     flash("Already Registed, redirecting to profile page.")
+    form = RegisterForm()
+    if request.method == "POST" and form.validate_on_submit():
+        new_user = User(form.email.data, form.password.data)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for("profile"))
+
+    return render_template("register.html", form=form, title="Register")
 
 
 @app.route("/profile")
@@ -48,4 +55,4 @@ def profile():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8001, debug=True)
+    app.run(host="0.0.0.0", port=8001)
