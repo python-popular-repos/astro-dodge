@@ -1,0 +1,12 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+    <div class="notification is-danger is-light">
+        <button class="delete"></button>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </div>
+</ul>
+{% endif %}
+{% endwith %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}{% block content %}
+
 <body>
   <section class="hero is-fullheight">
     <div class="hero-body">
@@ -8,28 +9,18 @@
           <hr class="login-hr" />
           <p class="subtitle has-text-black">Please login to proceed.</p>
           <div class="box">
-            <figure class="avatar">
-              <img src="https://via.placeholder.com/150" />
-            </figure>
-            <form>
+            <form method="POST">
+              {{ form.csrf_token }}
+              {{ form.hidden_tag() }}
               <div class="field">
                 <div class="control">
-                  <input
-                    class="input is-large"
-                    type="email"
-                    placeholder="Your Email"
-                    autofocus=""
-                  />
+                  <input class="input is-large" type="email" placeholder="Your Email" autofocus="" />
                 </div>
               </div>
 
               <div class="field">
                 <div class="control">
-                  <input
-                    class="input is-large"
-                    type="password"
-                    placeholder="Your Password"
-                  />
+                  <input class="input is-large" type="password" placeholder="Your Password" />
                 </div>
               </div>
               <div class="field">
@@ -43,11 +34,6 @@
               </button>
             </form>
           </div>
-          <p class="has-text-grey">
-            <a href="../">Sign Up</a> &nbsp;·&nbsp;
-            <a href="../">Forgot Password</a> &nbsp;·&nbsp;
-            <a href="../">Need Help?</a>
-          </p>
         </div>
       </div>
     </div>
