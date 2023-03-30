@@ -14,13 +14,15 @@
               {{ form.hidden_tag() }}
               <div class="field">
                 <div class="control">
-                  <input class="input is-large" type="email" placeholder="Your Email" autofocus="" />
+                  {{ form.email.label }}
+                  {{ form.email(class_="input is-large") }}
                 </div>
               </div>
 
               <div class="field">
                 <div class="control">
-                  <input class="input is-large" type="password" placeholder="Your Password" />
+                  {{ form.password.label }}
+                  {{ form.password(class_="input is-large") }}
                 </div>
               </div>
               <div class="field">
@@ -29,8 +31,7 @@
                   Remember me
                 </label>
               </div>
-              <button class="button is-block is-info is-large is-fullwidth">
-                Login <i class="fa fa-sign-in" aria-hidden="true"></i>
+              {{ form.submit(class_="button is-block is-info is-large is-fullwidth") }}
               </button>
             </form>
           </div>
