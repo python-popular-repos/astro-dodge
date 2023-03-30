@@ -1,10 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from sqlalchemy import DateTime
-from flask_login import LoginManager
+from flask_login import LoginManager, UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
+login = LoginManager()
 
 
 class Record(db.Model):
@@ -13,7 +14,7 @@ class Record(db.Model):
     created_at = db.Column(DateTime, nullable=False, default=datetime.utcnow)
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """
     Class that represents a user of the application
 
@@ -27,7 +28,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String, unique=True, nullable=False)
-    password_hashed = db.Column(db.String(128), nullable=False)
+    password_hashed = db.Column(db.String(200), nullable=False)
     registered_on = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, email: str, password_plaintext: str):

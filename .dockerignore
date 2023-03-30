@@ -2,3 +2,5 @@ instance/
 .venv/
 .vscode/
 .pytest_cache/
+.github
+README.md
