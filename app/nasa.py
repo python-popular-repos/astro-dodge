@@ -30,9 +30,8 @@ class SpaceObject:
 
 def fetch():
     base_url = f"https://ssd-api.jpl.nasa.gov/cad.api"
-    # payload = {"dist-min": "1LD", "date-min": "now", "date-max": "+7", "limit": 10}
     payload = {"dist-min": "2LD", "date-min": "now", "date-max": "+14"}
-    r = requests.get(base_url, params=payload)  # type: ignore
+    r = requests.get(base_url, params=payload)
     r_data = r.json()["data"]
     r_fields = r.json()["fields"]
     readable = [dict(zip(r_fields, data)) for data in r_data]

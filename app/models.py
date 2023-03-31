@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
-from sqlalchemy import DateTime
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime
+from sqlalchemy import DateTime
 
 db = SQLAlchemy()
 
@@ -11,6 +11,11 @@ class Record(db.Model):
     __tablename__ = "record"
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class SpaceObject(db.Model):
+    __tablename__ = "space"
+    designation = db.Column(db.String, primary_key=True, unique=True, nullable=False)
 
 
 class User(UserMixin, db.Model):
@@ -49,7 +54,7 @@ class User(UserMixin, db.Model):
         return generate_password_hash(password_plaintext)
 
     def __repr__(self):
-        return f"<User: {self.email}>"
+        return f"<User: {self.email}> | <Account Created: {self.registered_on}>"
 
     @property
     def is_authenticated(self):

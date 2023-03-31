@@ -1,10 +1,9 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
+from app.models import db, User
 
 
-db = SQLAlchemy()
 csrf = CSRFProtect()
 login_context = LoginManager()
 
@@ -22,13 +21,13 @@ def create_app():
 
     @login_context.user_loader
     def load_user(user_id):
-        from app.models import User
-
         return User.query.get(int(user_id))
 
     with app.app_context():
         from . import paths
         from . import auth
+
+        db.create_all()
 
         app.register_blueprint(paths.home_bp)
         app.register_blueprint(auth.auth_bp)

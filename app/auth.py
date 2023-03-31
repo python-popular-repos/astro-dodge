@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, logout_user
 from app.forms import RegisterForm, LoginForm
 from app.models import db, User
 
@@ -12,11 +12,9 @@ def register():
     form = RegisterForm()
     if request.method == "POST" and form.validate_on_submit():
         new_user = User(form.email.data, form.password.data)
-        if new_user:
-            flash("User already exists. Please use another email.")
-            return redirect(url_for("auth_bp.register"))
         db.session.add(new_user)
         db.session.commit()
+        login_user(new_user)
         return redirect(url_for("auth_bp.profile"))
 
     return render_template("register.html", form=form, title="Register")
@@ -39,6 +37,7 @@ def login():
 
 @auth_bp.route("/logout")
 def logout():
+    logout_user()
     return redirect(url_for("home_bp.index"))
 
 
