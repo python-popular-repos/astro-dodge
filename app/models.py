@@ -54,7 +54,7 @@ class User(UserMixin, db.Model):
         return generate_password_hash(password_plaintext)
 
     def __repr__(self):
-        return f"<User: {self.email}> | <Account Created: {self.registered_on}>"
+        return f"<User: {self.email}>"
 
     @property
     def is_authenticated(self):
