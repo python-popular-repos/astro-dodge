@@ -24,8 +24,7 @@ def create_app():
 
 
 def initialize_plugins(app: Flask):
-    # Since the application instance is now created, pass it to each Flask
-    # extension instance to bind it to the Flask application instance (app)
+    """Initialize plugin functionality with application instance."""
     db.init_app(app)
     csrf.init_app(app)
     login_context.init_app(app)
@@ -38,6 +37,7 @@ def initialize_plugins(app: Flask):
 
 
 def register_blueprints(app: Flask):
+    """Register blueprints to be used with Flask app."""
     from . import paths
     from . import auth
 

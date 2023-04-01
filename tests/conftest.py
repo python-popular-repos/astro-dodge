@@ -24,12 +24,12 @@ def new_user():
 def test_client():
     test_app = create_app()
     with test_app.test_client() as testing_client:
-        yield testing_client
+        with test_app.app_context():
+            yield testing_client
 
 
 @pytest.fixture(scope="module")
 def init_database(test_client):
-    # Create the database and the database table
     db.drop_all()
     db.create_all()
 
@@ -40,7 +40,19 @@ def init_database(test_client):
     db.session.add(user1)
     db.session.add(user2)
     db.session.commit()
-
     yield
 
     db.drop_all()
+
+
+@pytest.fixture(scope="function")
+def login_default_user(test_client):
+    test_client.post(
+        "/login",
+        data=dict(email="test@pytest.com", password="FlaskIsAwesome"),
+        follow_redirects=True,
+    )
+
+    yield
+
+    test_client.get("/logout", follow_redirects=True)
