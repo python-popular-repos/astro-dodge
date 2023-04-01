@@ -1,5 +1,5 @@
 """
-This file (test_endpoints_not_nominal.py) contains the functional tests for the view components.
+This file (test_database.py) contains the functional tests for the database components.
 Examples:
 * Focus on view components that operate under different conditions.
 * Nominal conditions(GET, POST)
