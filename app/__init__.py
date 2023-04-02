@@ -1,3 +1,4 @@
+from config import config
 from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
@@ -8,11 +9,13 @@ csrf = CSRFProtect()
 login_context = LoginManager()
 
 
-def create_app():
+def create_app(config_name=None):
     """Initialize the core application."""
+    if config_name is None:
+        config_name = "staging"
 
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_pyfile("config.py")
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
 
     initialize_plugins(app)
     register_blueprints(app)
