@@ -12,7 +12,7 @@ login_context = LoginManager()
 def create_app(config_name=None):
     """Initialize the core application."""
     if config_name is None:
-        config_name = "staging"
+        config_name = "testing"
 
     app = Flask(__name__)
     app.config.from_object(config[config_name])
