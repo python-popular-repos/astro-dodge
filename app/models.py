@@ -5,17 +5,6 @@ from sqlalchemy import DateTime
 from app import db
 
 
-class Record(db.Model):
-    __tablename__ = "record"
-    id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(DateTime, nullable=False, default=datetime.utcnow)
-
-
-class SpaceObject(db.Model):
-    __tablename__ = "space"
-    designation = db.Column(db.String, primary_key=True, unique=True, nullable=False)
-
-
 class User(UserMixin, db.Model):
     """
     Class that represents a user of the application
@@ -72,3 +61,19 @@ class User(UserMixin, db.Model):
     def get_id(self):
         """Return the user ID as a unicode string (`str`)."""
         return str(self.id)
+
+
+class Record(db.Model):
+    __tablename__ = "record"
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class SpaceRecord(db.Model):
+    __tablename__ = "space"
+
+    designation = db.Column(db.String, primary_key=True)
+    orbit_id = db.Column(db.String, nullable=False)
+    distance = db.Column(db.Float, nullable=False)
+    velocity = db.Column(db.Float, nullable=False)
+    entry_date = db.Column(DateTime, nullable=False, default=datetime.utcnow)

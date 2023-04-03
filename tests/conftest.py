@@ -19,6 +19,24 @@ def new_user():
     return new_user
 
 
+@pytest.fixture(scope="module")
+def mock_space_object():
+    fake_data = {
+        "des": "pytest",
+        "orbit_id": "0",
+        "jd": "100.1",
+        "cd": "2023-Apr-01 00:00",
+        "dist": "0.1001",
+        "dist_min": "0.0",
+        "dist_max": "0.1",
+        "v_rel": "10.0",
+        "v_inf": "10.1",
+        "t_sigma_f": "00:00",
+        "h": "100.101",
+    }
+    return fake_data
+
+
 # Fixtures for functional testing
 @pytest.fixture(scope="module")
 def test_client():

@@ -17,5 +17,5 @@ def about():
 
 @home_bp.route("/list", methods=["GET"])
 def space_list():
-    data = information.format()
+    data = information.format_space_object()
     return render_template("list.html", space_list=data, title="Space List")
