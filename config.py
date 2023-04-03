@@ -8,6 +8,7 @@ load_dotenv(os.path.join(basedir, ".env"))
 
 class Config:
     SECRET_KEY = secrets.token_hex(16)
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
     DEBUG = False
     TESTING = False
@@ -19,14 +20,12 @@ class DockerConfig(Config):
 
 class StagingConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.getenv("HOST_DB")
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
-    DEBUG = True
-
-
-class TestingConfig(Config):
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "instance/test.db")
     SQLALCHEMY_ECHO = True
     DEBUG = True
+
+
+class TestingConfig(StagingConfig):
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "instance/test.db")
     TESTING = True
 
 
