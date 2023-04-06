@@ -19,7 +19,7 @@ def new_user():
     return new_user
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def mock_space_object():
     fake_data = {
         "des": "pytest",
@@ -39,38 +39,41 @@ def mock_space_object():
 
 # Fixtures for functional testing
 @pytest.fixture(scope="module")
-def test_client():
-    test_app = create_app()
-    with test_app.test_client() as testing_client:
-        with test_app.app_context():
-            yield testing_client
+def app():
+    test_app = create_app("testing")
+    # test_app.config["LOGIN_DISABLED"] = True  # Flask-Login
+    test_app.config["WTF_CSRF_ENABLED"] = False  # Flask-WTF Forms
+    with test_app.app_context():
+        db.create_all()
+
+    yield test_app
 
 
 @pytest.fixture(scope="module")
-def init_database(test_client):
-    db.drop_all()
-    db.create_all()
-
-    # Insert user data
-    user1 = User(email="test@pytest.com", password_plaintext="FlaskIsAwesome")
-    user2 = User(email="test@pytest.c0m", password_plaintext="Flask1sAwesome")
-
-    db.session.add(user1)
-    db.session.add(user2)
-    db.session.commit()
-    yield
-
-    db.drop_all()
+def client(app):
+    """A test client for the app."""
+    return app.test_client()
 
 
-@pytest.fixture(scope="function")
-def login_default_user(test_client):
-    test_client.post(
-        "/login",
-        data=dict(email="test@pytest.com", password="FlaskIsAwesome"),
-        follow_redirects=True,
-    )
+@pytest.fixture(scope="module")
+def runner(app):
+    """A test runner for the app's Click commands."""
+    return app.test_cli_runner()
 
-    yield
 
-    test_client.get("/logout", follow_redirects=True)
+class AuthorizedActions:
+    def __init__(self, client):
+        self._client = client
+
+    def login(self, username="test", password="test"):
+        return self._client.post(
+            "/login", data={"username": username, "password": password}
+        )
+
+    def logout(self):
+        return self._client.get("/logout")
+
+
+@pytest.fixture
+def auth_user(client):
+    return AuthorizedActions(client)

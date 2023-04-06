@@ -4,7 +4,8 @@ Examples:
 * Focus on testing small units of code in isolation 
   (ie database models, utility functions)
 """
-from app.nasa import SpaceObject, _fetch, _format_to_dict, format_space_object
+from app.nasa import _fetch, _format_to_dict, format_space_object
+from app.models import SpaceObject
 
 
 def test_api():
