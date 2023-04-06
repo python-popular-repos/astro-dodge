@@ -42,7 +42,7 @@ def initialize_plugins(app: Flask):
 
     @login_context.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        return db.session.execute(db.select(User).filter(User.id == user_id)).scalar()
 
     @login_context.unauthorized_handler
     def unauthorized():
