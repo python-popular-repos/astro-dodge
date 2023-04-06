@@ -8,25 +8,40 @@
   </div>
 </section>
 
-<section class="section is-small">
+<section class="section">
+  <div class="box">
+
+  </div>
+</section>
+
+<section class="section">
   <table class="table is-striped is-fullwidth is-hoverable">
     <thead>
       <tr style="text-align:center">
-        <td>Name</td>
-        <td>Closest Approach Date</td>
-        <td>Time (GMT)</td>
-        <td>Estimated Velocity (km/s)</td>
-        <td>Current Distance (km)</td>
+        <td><strong>Name</strong></td>
+        <td><strong>Closest Approach Date</strong></td>
+        <td><strong>Time (GMT)</strong></td>
+        <td><strong>Estimated Velocity (km/s)</strong></td>
+        <td><strong>Current Distance (km)</strong></td>
+        <td><strong>Actions</strong></td>
       </tr>
     </thead>
     <tbody>
-      {% for card in space_list|sort(attribute="closest") %}
+      {% for card in space_list|sort(attribute="closest.date()") %}
       <tr style="text-align:center">
         <td>{{ card.designation }}</td>
         <td>{{ card.closest.date() }}</td>
         <td>{{ card.closest.time() }} </td>
         <td>{{ card.velocity }}</td>
         <td>{{ card.distance }}</td>
+        <td>
+          <button class="button is-success" {{ toggle }}>
+            <span class="icon is-small">
+              <i class="fa-solid fa-eye"></i>
+            </span>
+            <span>Watch</span>
+          </button>
+        <td>
       </tr>
       {% endfor %}
     </tbody>

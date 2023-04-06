@@ -10,14 +10,12 @@
           <p class="subtitle has-text-black">Please login to proceed.</p>
           <div class="box">
             <form method="POST">
-              {{ form.csrf_token }}
               {{ form.hidden_tag() }}
               <div class="field">
                 <div class="control">
                   {{ form.email(placeholder="Email", class_="input is-large") }}
                 </div>
               </div>
-
               <div class="field">
                 <div class="control">
                   {{ form.password(placeholder="Password", class_="input is-large") }}
@@ -29,7 +27,6 @@
                 </label>
               </div>
               {{ form.submit(class_="button is-block is-info is-large is-fullwidth") }}
-              </button>
             </form>
           </div>
         </div>
