@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, PasswordField, StringField, SubmitField
+from wtforms import BooleanField, PasswordField, StringField, SubmitField, FieldList
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 
@@ -26,5 +26,7 @@ class LoginForm(FlaskForm):
 
 
 class AstroForm(FlaskForm):
-    select = SubmitField(label="Add record")
+    add = SubmitField(label="Add items")
+    select = BooleanField()
+    results = FieldList(BooleanField("Name"))
     item = StringField("Astro", validators=[DataRequired()])

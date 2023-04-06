@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_user, login_required, logout_user, current_user
 from app.forms import RegisterForm, LoginForm, AstroForm
-from app.models import db, User
+from app.models import db, User, SpaceRecord
 
 # Blueprint Configuration
 auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
@@ -42,7 +42,7 @@ def login():
         user = db.session.execute(
             db.select(User).filter_by(email=form.email.data)
         ).scalar()
-        x = 0
+
         if user and user.is_password_correct(form.password.data):
             flash(f"Thanks for logging in, {user.email}!")
             login_user(user, remember=form.remember_me.data)
@@ -51,6 +51,22 @@ def login():
         flash("Incorrect login credentials.")
 
     return render_template("login.html", form=form, title="Login")
+
+
+@auth_bp.route("/list", methods=["GET", "PUT"])
+@login_required
+def space_list():
+    form = AstroForm()
+    record = db.session.execute(db.select(SpaceRecord)).scalars()
+    toggle = "" if current_user.is_authenticated else "disabled"  # type: ignore
+
+    return render_template(
+        "auth-list.html",
+        space_list=record,
+        title="Space List",
+        toggle=toggle,
+        form=form,
+    )
 
 
 @auth_bp.route("/logout")

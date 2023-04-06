@@ -74,7 +74,7 @@ def test_login_page(client):
     WHEN the '/login' page is requested (GET)
     THEN check the response is valid
     """
-    response = client.get("/login")
+    response = client.get("/auth/login")
     assert response.status_code == 200
     assert b"Login" in response.data
     assert b"Email" in response.data
@@ -92,7 +92,7 @@ def test_login_profile(client, auth_user):
     assert response.status_code == 200
 
     with client:
-        client.get("/profile")
+        client.get("/auth/profile")
         assert response.status_code == 200
 
 
@@ -102,7 +102,7 @@ def test_register_page(client):
     WHEN the '/register' page is requested (GET)
     THEN check the response is valid
     """
-    response = client.get("/register")
+    response = client.get("/auth/register")
     assert response.status_code == 200
     assert b"Register" in response.data
     assert b"Email" in response.data
@@ -117,7 +117,7 @@ def test_logout(client, auth_user):
     THEN check the response is valid
     """
     auth_user.login()
-    response = client.get("/profile")
+    response = client.get("/auth/profile")
     assert response.status_code == 200
 
     with client:

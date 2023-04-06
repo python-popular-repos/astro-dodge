@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 from app.models import SpaceRecord
-from app.forms import AstroForm
 from flask_login import current_user
 
 # Blueprint Configuration
@@ -17,19 +16,13 @@ def about():
     return render_template("about.html", title="About")
 
 
-@home_bp.route("/list", methods=["GET", "PUT"])
+@home_bp.route("/list", methods=["GET"])
 def space_list():
-    form = AstroForm()
     if current_user.is_authenticated:  # type: ignore
-        record = SpaceRecord.query.all()
-    else:
-        record = SpaceRecord.query.limit(5).all()
-
+        return redirect(url_for("auth_bp.space_list"))
+    record = SpaceRecord.query.limit(5).all()
     toggle = "" if current_user.is_authenticated else "disabled"  # type: ignore
 
     return render_template(
-        "list.html", space_list=record, title="Space List", toggle=toggle, form=form
+        "list.html", space_list=record, title="Space List", toggle=toggle
     )
-
-
-# user = db.session.execute(db.select(User).filter_by(email=form.email.data)).scalar()
