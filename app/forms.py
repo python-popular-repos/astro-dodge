@@ -7,8 +7,7 @@ from wtforms import (
     PasswordField,
     StringField,
     SubmitField,
-    SelectMultipleField,
-    widgets,
+    SelectMultipleField, widgets
 )
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
@@ -34,49 +33,25 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField("Remember Me")
     submit = SubmitField("Login")
 
+class MultiCheckboxField(SelectMultipleField):
+    """
+    A multiple-select, except displays a list of checkboxes.
 
-class AstroForm(FlaskForm):
-    select = SubmitField(label="Add record")
-    item = StringField("Astro", validators=[DataRequired()])
-
-
-class CheckboxField(SelectMultipleField):
+    Iterating the field will produce subfields, allowing custom rendering of
+    the enclosed checkbox fields.
+    """
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()
 
-
-class ExampleForm(FlaskForm):
-    choices = CheckboxField("Astro", coerce=str)
-    submit = SubmitField(label="Submit Choices")
-
-
-def example():
-    form = ExampleForm()
-    # populate the forms dynamically with the choices in the database
-    stmt = db.Select(SpaceRecord)
-    query = db.session.execute(stmt).scalars()
-    form.check_options.choices = [a.designation for a in query]
-    # if it's a post request and we validated successfully
-    if request.POST and form.validate_on_submit():
-        # get our choices again, could technically cache these in a list if we wanted but w/e
-        c_records = query
-        # need a list to hold our choices
-        accepted = []
-        # looping through the choices, we check the choice ID against what was passed in the form
-        for choice in c_records:
-            # when we find a match, we then append the Choice object to our list
-            if choice.id in form.check_options.data:
-                accepted.append(choice)
-        # now all we have to do is update the users choices records
-        x = 0
-        x = 1
-    else:
-        # tell the form what's already selected
-        toggle = "" if current_user.is_authenticated else "disabled"  # type: ignore
-
-        return render_template(
-        "list.html", space_list=query, title="Space List", toggle=toggle, form=form
-    )
-
-if __name__ == "__main__":
-    example()
+class AstroForm(FlaskForm):
+    select = BooleanField(label="Select record", value=False,validators=[DataRequired()])
+    submit = SubmitField(label="Add to Watch")
+    items = []
+    # for item in items:
+    #     setattr(
+    #         AstroForm,
+    #         item,
+    #         BooleanField(
+    #             item, default=False, id=item, validators=[DataRequired()], coerce=bool
+    #         ),
+    #     )

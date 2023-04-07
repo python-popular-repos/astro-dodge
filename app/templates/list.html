@@ -16,7 +16,7 @@
 
 <section class="section">
   <div class="columns">
-    <div class="column is-four-fifths">
+    <div class="column">
       <table class="table is-striped is-fullwidth is-hoverable">
         <thead>
           <tr style="text-align:center">
@@ -25,31 +25,28 @@
             <td><strong>Time (GMT)</strong></td>
             <td><strong>Estimated Velocity (km/s)</strong></td>
             <td><strong>Current Distance (km)</strong></td>
+            <td><strong>Add to Watch List</strong></td>
           </tr>
         </thead>
-        <tbody>
-          {% for card in space_list|sort(attribute="closest.date()") %}
-          <tr style="text-align:center">
-            <td>{{ card.designation }}</td>
-            <td>{{ card.closest.date() }}</td>
-            <td>{{ card.closest.time() }} </td>
-            <td>{{ card.velocity }}</td>
-            <td>{{ card.distance }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
+        <form method="POST">
+          {{ form.csrf_token }}
+          {{ form.hidden_tag() }}
+          <tbody>
+            {% for card in space_list %}
+            <tr style="text-align:center">
+              <td>{{ card.designation }}</td>
+              <td>{{ card.closest.date() }}</td>
+              <td>{{ card.closest.time() }}</td>
+              <td>{{ card.velocity }}</td>
+              <td>{{ card.distance }}</td>
+              <td>{{ form.select(id=card.designation)}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          {{ form.submit }}
+        </form>
       </table>
     </div>
-    <div class="column is-flexible has-background-light has-text-justified">
-      <h2 class="title">Watch List</h2>
-        <form action="POST">
-        <div class="form-check">
-        {{ form.choices(class="form-check-input is-size-4") }}
-        {{ form.submit(class="button is-info is-outlined")}}
-        </div>
-      </form>
-    </div>
   </div>
-  
 </section>
 {% endblock %}
