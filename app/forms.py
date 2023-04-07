@@ -1,5 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, PasswordField, StringField, SubmitField, FieldList
+from wtforms import (
+    BooleanField,
+    PasswordField,
+    StringField,
+    SubmitField,
+    SelectMultipleField,
+    widgets,
+)
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 
@@ -25,8 +32,18 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 
+class MultiCheckboxField(SelectMultipleField):
+    """
+    A multiple-select, except displays a list of checkboxes.
+
+    Iterating the field will produce subfields, allowing custom rendering of
+    the enclosed checkbox fields.
+    """
+
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
+
+
 class AstroForm(FlaskForm):
-    add = SubmitField(label="Add items")
-    select = BooleanField()
-    results = FieldList(BooleanField("Name"))
-    item = StringField("Astro", validators=[DataRequired()])
+    select = BooleanField(label="Select")
+    submit = SubmitField(label="Add to Watch List")

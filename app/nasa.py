@@ -1,6 +1,6 @@
 import requests
 from typing import List
-from . import db
+from app import db
 from app.models import SpaceObject, SpaceRecord
 
 
