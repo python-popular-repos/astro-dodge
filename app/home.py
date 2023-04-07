@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, flash
 from app.models import SpaceRecord
 from app.forms import AstroForm
 from app import db
@@ -21,19 +21,27 @@ def about():
 @home_bp.route("/list", methods=["GET", "POST"])
 def space_list():
     form = AstroForm()
-    stmt = db.select(SpaceRecord)
+
+    if current_user.is_authenticated:  # type: ignore
+        stmt = db.select(SpaceRecord)
+        toggle = ""
+    else:
+        stmt = db.select(SpaceRecord).limit(5)
+        toggle = "disabled"
+
     query = db.session.execute(stmt).scalars()
-    form.items = query
 
     if request.method == "POST" and form.validate_on_submit():
         selected_items = []
-        test = request
-        for item in form.items:
-            if item.designation:
-                selected_items.append(item.id)
-    else:
-        toggle = "" if current_user.is_authenticated else ""  # type: ignore
+        records = request.form.getlist("select")
+        for item in records:
+            selected_items.append(item)
+        flash(f"Added {selected_items}")
 
         return render_template(
+            "list.html", space_list=query, title="Space List", toggle=toggle, form=form
+        )
+
+    return render_template(
         "list.html", space_list=query, title="Space List", toggle=toggle, form=form
     )

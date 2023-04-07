@@ -10,7 +10,6 @@
 
 <section class="section">
   <div class="box">
-
   </div>
 </section>
 
@@ -29,7 +28,6 @@
           </tr>
         </thead>
         <form method="POST">
-          {{ form.csrf_token }}
           {{ form.hidden_tag() }}
           <tbody>
             {% for card in space_list %}
@@ -39,11 +37,13 @@
               <td>{{ card.closest.time() }}</td>
               <td>{{ card.velocity }}</td>
               <td>{{ card.distance }}</td>
-              <td>{{ form.select(id=card.designation)}}</td>
+              <td>{{ form.select(value=card.designation)}}</td>
             </tr>
             {% endfor %}
           </tbody>
-          {{ form.submit }}
+          <tfoot>
+            {{ form.submit(class_="button is-info is-outlined") }}
+          </tfoot>
         </form>
       </table>
     </div>

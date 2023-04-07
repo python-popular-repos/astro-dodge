@@ -42,7 +42,7 @@ def login():
         user = db.session.execute(
             db.select(User).filter_by(email=form.email.data)
         ).scalar()
-        x = 0
+
         if user and user.is_password_correct(form.password.data):
             flash(f"Thanks for logging in, {user.email}!")
             login_user(user, remember=form.remember_me.data)
