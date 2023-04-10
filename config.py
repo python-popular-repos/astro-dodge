@@ -25,7 +25,8 @@ class StagingConfig(Config):
 
 
 class TestingConfig(StagingConfig):
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "instance/test.db")
+    #  "sqlite:/// + os.path.join(basedir, "instance/test.db")"
+    SQLALCHEMY_DATABASE_URI = "sqlite://"
     TESTING = True
 
 
