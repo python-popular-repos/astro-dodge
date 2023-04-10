@@ -27,6 +27,14 @@ def create_app(config_name="testing"):
 
     with app.app_context():
         db.create_all()
+        if config_name == "testing":
+            from app.models import User
+            from app.nasa import seed_db
+
+            seed_db()
+            seed_user = User("test@pytest.com", "testing")
+            db.session.add(seed_user)
+            db.session.commit()
 
     return app
 

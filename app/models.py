@@ -131,4 +131,4 @@ class Record(BaseModel):
         self.space_id = space
 
     def __repr__(self):
-        return f"{self.record_id} | {self.user_id} | {self.space_id}"
+        return f"{self.user_id} | {self.space_id}"
