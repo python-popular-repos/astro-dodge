@@ -9,14 +9,10 @@
 </section>
 
 <section class="section">
+  {% include 'table_record.html' %}
 </section>
 <div class="container is-fullwidth">
   <div class="columns">
-    <div class="column is-two-fifths">
-      <div class="box">
-        Closest Objects Observed
-      </div>
-    </div>
     <div class="column">
       <div class="box">
         Hubble Image of the Day
@@ -26,6 +22,11 @@
       <div class="box">
         Favorite Space Objects
       </div>
+      {% for item in watchlist %}
+
+      <ul>{{ item.space.designation }}</ul>
+
+      {% endfor %}
     </div>
   </div>
 </div>

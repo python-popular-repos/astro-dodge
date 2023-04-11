@@ -122,13 +122,12 @@ class Record(BaseModel):
     record_id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     space_id = db.Column(db.String, db.ForeignKey("space.designation"))
-    space = db.relationship("SpaceRecord", backref=backref("space", uselist=False))
-    user = db.relationship("User", backref=backref("users"), uselist=False)
+    space = db.relationship("SpaceRecord", backref=backref("space"))
+    user = db.relationship("User", backref=backref("users"))
 
-    def __init__(self, record: int, user: int, space: str):
-        self.record_id = record
+    def __init__(self, user: int, space: str):
         self.user_id = user
         self.space_id = space
 
     def __repr__(self):
-        return f"{self.user_id} | {self.space_id}"
+        return f"{self.user_id} | {self.space_id} | {self.user} | {self.space}"

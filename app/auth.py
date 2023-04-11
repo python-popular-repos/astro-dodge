@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_user, login_required, logout_user, current_user
 from app.forms import RegisterForm, LoginForm, AstroForm
-from app.models import db, User, SpaceRecord
+from app.models import db, User, SpaceRecord, Record
 
 # Blueprint Configuration
 auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
@@ -15,7 +15,7 @@ def register():
 
     form = RegisterForm()
 
-    if request.method == "POST" and form.validate_on_submit():
+    if form.validate_on_submit():
         user_check = db.session.execute(
             db.select(User).filter_by(email=form.email.data)
         ).scalar()
@@ -38,7 +38,7 @@ def register():
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
-    if request.method == "POST" and form.validate_on_submit():
+    if form.validate_on_submit():
         user = db.session.execute(
             db.select(User).filter_by(email=form.email.data)
         ).scalar()
@@ -53,18 +53,63 @@ def login():
     return render_template("login.html", form=form, title="Login")
 
 
-@auth_bp.route("/list", methods=["GET", "PUT"])
+@auth_bp.route("/list", methods=["GET", "POST"])
 @login_required
 def space_list():
     form = AstroForm()
-    record = db.session.execute(db.select(SpaceRecord)).scalars()
-    toggle = "" if current_user.is_authenticated else "disabled"  # type: ignore
+    subquery = db.session.query(Record.space_id).subquery()
+    record = (
+        db.session.query(SpaceRecord)
+        .filter(~SpaceRecord.designation.in_(subquery))  # type: ignore
+        .all()
+    )
+
+    if form.validate_on_submit():
+        records = request.form.getlist("select")
+        if not records:
+            flash(f"Nothing selected to be added to the watchlist.")
+            return redirect(url_for("auth_bp.space_list"))
+
+        for item in records:
+            commit_this = Record(current_user.id, item)  # type: ignore
+            db.session.add(commit_this)
+        db.session.commit()
+
+        return redirect(url_for("auth_bp.profile"))
 
     return render_template(
-        "auth-list.html",
-        space_list=record,
-        title="Space List",
-        toggle=toggle,
+        "list.html", space_list=record, title="Space List", form=form
+    )
+
+
+@auth_bp.route("/profile", methods=["GET", "POST", "DELETE"])
+@login_required
+def profile():
+    form = AstroForm()
+    stmt = db.select(SpaceRecord).join(Record.space)
+    watchlist = db.session.execute(stmt).scalars()
+
+    if form.validate_on_submit():
+        records = request.form.getlist("select")
+
+        if not records:
+            flash(f"Nothing selected.")
+            return redirect(url_for("auth_bp.profile"))
+
+        for item in records:
+            entry = db.session.execute(
+                db.select(Record).filter_by(space_id=item)
+            ).scalar()
+            db.session.delete(entry)
+
+        db.session.commit()
+        return redirect(url_for("auth_bp.profile"))
+
+    return render_template(
+        "profile.html",
+        title="Profile",
+        watchlist=watchlist,
+        space_list=watchlist,
         form=form,
     )
 
@@ -73,9 +118,3 @@ def space_list():
 def logout():
     logout_user()
     return redirect(url_for("home_bp.index"))
-
-
-@auth_bp.route("/profile")
-@login_required
-def profile():
-    return render_template("profile.html", title="Profile")

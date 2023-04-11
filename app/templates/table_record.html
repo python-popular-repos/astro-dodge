@@ -1,0 +1,39 @@
+<table class="table is-striped is-fullwidth is-hoverable">
+  <thead>
+    <tr style="text-align:center">
+      <td><strong>Name</strong></td>
+      <td><strong>Closest Approach Date</strong></td>
+      <td><strong>Time (GMT)</strong></td>
+      <td><strong>Estimated Velocity (km/s)</strong></td>
+      <td><strong>Current Distance (km)</strong></td>
+      {% if current_user.is_authenticated %}
+      <td><strong>Remove from Watchlist</strong></td>
+      {% endif %}
+    </tr>
+  </thead>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <tbody>
+      {% for record in space_list %}
+      <tr style="text-align:center">
+        <td>{{ record.designation }}</td>
+        <td>{{ record.closest.date() }}</td>
+        <td>{{ record.closest.time() }}</td>
+        <td>{{ record.velocity }}</td>
+        <td>{{ record.distance }}</td>
+        <td>{{ form.select(value=record.designation)}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr style="text-align:center">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{ form.submit(class_="button is-danger is-outlined") }}</td>
+      </tr>
+    </tfoot>
+  </form>
+</table>

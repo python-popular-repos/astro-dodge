@@ -23,41 +23,5 @@
 
   </div>
 </section>
-
-<section class="section">
-  <div class="columns">
-    <div class="column">
-      <table class="table is-striped is-fullwidth is-hoverable">
-        <thead>
-          <tr style="text-align:center">
-            <td><strong>Name</strong></td>
-            <td><strong>Closest Approach Date</strong></td>
-            <td><strong>Time (GMT)</strong></td>
-            <td><strong>Estimated Velocity (km/s)</strong></td>
-            <td><strong>Current Distance (km)</strong></td>
-            <td><strong>Add to Watch List</strong></td>
-          </tr>
-        </thead>
-        <form method="POST">
-          {{ form.hidden_tag() }}
-          <tbody>
-            {% for card in space_list %}
-            <tr style="text-align:center">
-              <td>{{ card.designation }}</td>
-              <td>{{ card.closest.date() }}</td>
-              <td>{{ card.closest.time() }}</td>
-              <td>{{ card.velocity }}</td>
-              <td>{{ card.distance }}</td>
-              <td>{{ form.select(value=card.designation)}}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-          <tfoot>
-            {{ form.submit(class_="button is-info is-outlined") }}
-          </tfoot>
-        </form>
-      </table>
-    </div>
-  </div>
-</section>
+<section class="section">{% include 'table.html' %}</section>
 {% endblock %}
