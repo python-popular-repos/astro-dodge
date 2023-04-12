@@ -19,7 +19,7 @@ def new_user():
     return new_user
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def mock_space_object():
     fake_data = {
         "des": "pytest",
@@ -41,7 +41,6 @@ def mock_space_object():
 @pytest.fixture(scope="module")
 def app():
     test_app = create_app("testing")
-    # test_app.config["LOGIN_DISABLED"] = True  # Flask-Login
     test_app.config["WTF_CSRF_ENABLED"] = False  # Flask-WTF Forms
     with test_app.app_context():
         db.create_all()

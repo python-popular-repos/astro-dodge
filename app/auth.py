@@ -82,12 +82,14 @@ def space_list():
     )
 
 
-@auth_bp.route("/profile", methods=["GET", "POST", "DELETE"])
+@auth_bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
     form = AstroForm()
     stmt = db.select(SpaceRecord).join(Record.space)
-    watchlist = db.session.execute(stmt).scalars()
+    watchlist = db.session.execute(stmt).scalars().all()
+
+    watchlist = watchlist if len(watchlist) > 0 else None
 
     if form.validate_on_submit():
         records = request.form.getlist("select")
@@ -109,7 +111,6 @@ def profile():
         "profile.html",
         title="Profile",
         watchlist=watchlist,
-        space_list=watchlist,
         form=form,
     )
 

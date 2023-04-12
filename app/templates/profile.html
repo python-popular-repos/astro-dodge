@@ -8,28 +8,23 @@
   </div>
 </section>
 
+{% if watchlist %}
 <section class="section">
   {% include 'table_record.html' %}
 </section>
-<div class="container is-fullwidth">
-  <div class="columns">
-    <div class="column">
-      <div class="box">
-        Hubble Image of the Day
-      </div>
+{% else %}
+<section class="section">
+  <article class="message is-info">
+    <div class="message-header">
+      <p>No Watchlist Items</p>
     </div>
-    <div class="column">
-      <div class="box">
-        Favorite Space Objects
-      </div>
-      {% for item in watchlist %}
-
-      <ul>{{ item.space.designation }}</ul>
-
-      {% endfor %}
+    <div class="message-body">
+      Navigate to the Space List page to add entries to your Watchlist.
     </div>
-  </div>
-</div>
+  </article>
+</section>
+{% endif %}
+
 <section class="section">
 </section>
 {% endblock %}

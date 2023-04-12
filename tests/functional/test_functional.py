@@ -115,6 +115,8 @@ def test_logout(client, auth_user):
     GIVEN a Flask application configured with an authorized user
     WHEN the '/register' page is requested (GET)
     THEN check the response is valid
+    WHEN the '/logout' page is requested (GET)
+    THEN check the page has been redirected to home page ('/')
     """
     auth_user.login()
     response = client.get("/auth/profile")
@@ -123,3 +125,25 @@ def test_logout(client, auth_user):
     with client:
         auth_user.logout()
         response = client.get("/")
+
+
+def test_auth_profile(client, auth_user):
+    """
+    GIVEN a Flask application configured with an authorized user
+    WHEN the '/auth/profile' page is requested (GET)
+    THEN check the response is valid
+    """
+    auth_user.login()
+    response = client.get("/auth/profile")
+    assert response.status_code == 200
+
+
+def test_auth_list(client, auth_user):
+    """
+    GIVEN a Flask application configured with an authorized user
+    WHEN the '/auth/list' page is requested (GET)
+    THEN check the response is valid
+    """
+    auth_user.login()
+    response = client.get("/auth/list")
+    assert response.status_code == 200
