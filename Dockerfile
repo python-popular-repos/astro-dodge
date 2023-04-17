@@ -7,4 +7,4 @@ RUN python -m pip install --no-cache-dir --disable-pip-version-check --requireme
 WORKDIR /astro-dodge
 COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:create_app()"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:create_app('docker')"]

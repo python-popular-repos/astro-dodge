@@ -2,21 +2,19 @@ from flask import Flask, redirect, url_for, flash
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
-from flask_debugtoolbar import DebugToolbarExtension
 from config import config
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
-debug = DebugToolbarExtension()
 login_context = LoginManager()
 login_context.login_view = "auth_bp.login"  # type: ignore
 
 
-def create_app(config_name="testing"):
-    """Initialize the core application. Default="testing'
-    "docker" : DockerConfig
-    "staging": StagingConfig
-    "testing": TestingConfig
+def create_app(config_name="docker"):
+    """Initialize the core application.
+        "docker" : DockerConfig
+        "staging": StagingConfig
+        "testing": TestingConfig
     """
 
     app = Flask(__name__)
@@ -44,7 +42,6 @@ def initialize_plugins(app: Flask):
     db.init_app(app)
     csrf.init_app(app)
     login_context.init_app(app)
-    debug.init_app(app)
 
     from app.models import User
 
