@@ -19,13 +19,12 @@ class DockerConfig(Config):
 
 
 class StagingConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.getenv("HOST_DB")
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "instance/test.db")
     SQLALCHEMY_ECHO = True
     DEBUG = True
 
 
 class TestingConfig(StagingConfig):
-    #  "sqlite:/// + os.path.join(basedir, "instance/test.db")"
     SQLALCHEMY_DATABASE_URI = "sqlite://"
     TESTING = True
 
