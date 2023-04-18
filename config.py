@@ -29,7 +29,7 @@ class TestingConfig(StagingConfig):
     TESTING = True
 
 
-config = {
+configuration = {
     "docker": DockerConfig,
     "staging": StagingConfig,
     "testing": TestingConfig,

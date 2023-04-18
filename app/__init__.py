@@ -2,7 +2,8 @@ from flask import Flask, redirect, url_for, flash
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
-from config import config
+from config import configuration
+
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
@@ -10,29 +11,22 @@ login_context = LoginManager()
 login_context.login_view = "auth_bp.login"  # type: ignore
 
 
-def create_app(config_name="docker"):
+def create_app(config_name="staging"):
     """Initialize the core application.
-        "docker" : DockerConfig
-        "staging": StagingConfig
-        "testing": TestingConfig
+    "docker" : DockerConfig
+    "staging": StagingConfig
+    "testing": TestingConfig
     """
 
     app = Flask(__name__)
-    app.config.from_object(config[config_name])
-
+    app.config.from_object(configuration[config_name])
     initialize_plugins(app)
     register_blueprints(app)
+    if not "docker" == config_name:
+        add_commands(app)
 
     with app.app_context():
         db.create_all()
-        if config_name == "testing":
-            from app.models import User
-            from app.nasa import seed_db
-
-            seed_db()
-            seed_user = User("test@pytest.com", "testing")
-            db.session.add(seed_user)
-            db.session.commit()
 
     return app
 
@@ -62,3 +56,37 @@ def register_blueprints(app: Flask):
 
     app.register_blueprint(home.home_bp)
     app.register_blueprint(auth.auth_bp)
+
+
+def add_commands(app: Flask):
+    """Helper commands for development. Available for staging and testing."""
+    import click
+
+    @app.cli.command("create_db")
+    def create_db():
+        """Build database tables."""
+        db.drop_all()
+        db.create_all()
+        click.echo("Database Created.")
+
+    @app.cli.command("drop_db")
+    def drop_db():
+        """Drop database tables."""
+        db.drop_all()
+        click.echo("Datebase Dropped.")
+
+    @app.cli.command("seed_db")
+    def seed_db():
+        """Add single user to database."""
+        from app.models import User, Record
+
+        seeded_user = User(email="flask@cli.com", password_plaintext="testing")
+        seeded_record = Record(user=123, space="Vulcan")
+        db.session.add(seeded_user)
+        db.session.add(seeded_record)
+        db.session.commit()
+        click.echo("User added to database.")
+
+    app.cli.add_command(create_db)
+    app.cli.add_command(drop_db)
+    app.cli.add_command(seed_db)
