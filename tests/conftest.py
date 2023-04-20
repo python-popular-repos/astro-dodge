@@ -40,18 +40,19 @@ def mock_space_object():
 # Fixtures for functional testing
 @pytest.fixture(scope="module")
 def app():
-    test_app = create_app("testing")
-    test_app.config["WTF_CSRF_ENABLED"] = False  # Flask-WTF Forms
-    with test_app.app_context():
+    """Create and configure a new app instance for each test."""
+    app = create_app("testing")
+    with app.app_context():
         db.create_all()
+        yield app
+        db.drop_all()
 
-    yield test_app
 
-
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def client(app):
     """A test client for the app."""
-    return app.test_client()
+    with app.test_client() as client:
+        yield client
 
 
 @pytest.fixture(scope="module")
@@ -60,19 +61,20 @@ def runner(app):
     return app.test_cli_runner()
 
 
-class AuthorizedActions:
-    def __init__(self, client):
-        self._client = client
+@pytest.fixture(scope="function")
+def auth_user(client):
+    """A test user that is logged in."""
+    with app.app_context():
+        from app.models import User
 
-    def login(self, username="test", password="test"):
-        return self._client.post(
-            "/auth/login", data={"username": username, "password": password}
+        user = User(email="testing@pytest.com", password_plaintext="testing")
+        db.session.add(user)
+        db.session.commit()
+
+        client.post(
+            "/auth/login", data={"email": "testing@pytest.com", "password": "testing"}
         )
 
-    def logout(self):
-        return self._client.get("/logout")
+        yield user
 
-
-@pytest.fixture
-def auth_user(client):
-    return AuthorizedActions(client)
+        client.get("/logout")

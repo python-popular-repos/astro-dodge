@@ -9,8 +9,8 @@ Examples:
 
 
 def test_app_factory(client):
-    assert client.application.testing == True
-    assert client.application.debug == True
+    assert client.application.testing is True
+    assert client.application.debug is True
 
 
 def test_index_page(client):
@@ -22,6 +22,8 @@ def test_index_page(client):
     response = client.get("/")
     assert response.status_code == 200
     assert b"AstroDodge" in response.data
+    assert b"<header" in response.data
+    assert b"<footer" in response.data
 
 
 def test_index_page_post(client):
@@ -43,6 +45,8 @@ def test_about_page(client):
     response = client.get("/about")
     assert response.status_code == 200
     assert b"About" in response.data
+    assert b"<header" in response.data
+    assert b"<footer" in response.data
 
 
 def test_about_page_post(client):
@@ -66,6 +70,8 @@ def test_list_page(client):
     assert b"Near Earth Objects" in response.data
     assert b"Closest Approach Date" in response.data
     assert b"Current Distance" in response.data
+    assert b"<header" in response.data
+    assert b"<footer" in response.data
 
 
 def test_login_page(client):
@@ -84,16 +90,16 @@ def test_login_page(client):
 def test_login_profile(client, auth_user):
     """
     GIVEN a Flask application with an authorized user
-    WHEN the user is logged in assert the redirect count is 1
+    WHEN the user is logged in
     THEN check that user is able to access the "/profile" route
-    THEN check the response is valid
+    AND check the response is valid
     """
     response = auth_user.login()
     assert response.status_code == 200
 
     with client:
-        client.get("/auth/profile")
-        assert response.status_code == 200
+        profile_response = client.get("/auth/profile")
+        assert profile_response.status_code == 200
 
 
 def test_register_page(client):

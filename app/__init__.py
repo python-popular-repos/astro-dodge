@@ -11,18 +11,27 @@ login_context = LoginManager()
 login_context.login_view = "auth_bp.login"  # type: ignore
 
 
-def create_app(config_name="staging"):
-    """Initialize the core application.
-    "docker" : DockerConfig
-    "staging": StagingConfig
-    "testing": TestingConfig
+def create_app(config_name=None):
     """
+    Create a new Flask application.
+
+    Args:
+        config_name (str): The name of the configuration to use.
+        "docker" : DockerConfig
+        "staging": StagingConfig
+        "testing": TestingConfig
+
+    Returns:
+        Flask: The new Flask application.
+    """
+    if config_name is None:
+        config_name = "staging"
 
     app = Flask(__name__)
     app.config.from_object(configuration[config_name])
     initialize_plugins(app)
     register_blueprints(app)
-    if not "docker" == config_name:
+    if config_name != "docker":
         add_commands(app)
 
     with app.app_context():
@@ -32,7 +41,12 @@ def create_app(config_name="staging"):
 
 
 def initialize_plugins(app: Flask):
-    """Initialize plugin functionality with application instance."""
+    """
+    Initialize plugin functionality with application instance.
+
+    Args:
+        app (Flask): The Flask application.
+    """
     db.init_app(app)
     csrf.init_app(app)
     login_context.init_app(app)
@@ -50,7 +64,12 @@ def initialize_plugins(app: Flask):
 
 
 def register_blueprints(app: Flask):
-    """Register blueprints to be used with Flask app."""
+    """
+    Register blueprints to be used with Flask app.
+
+    Args:
+        app (Flask): The Flask application.
+    """
     from . import home
     from . import auth
 
@@ -59,7 +78,12 @@ def register_blueprints(app: Flask):
 
 
 def add_commands(app: Flask):
-    """Helper commands for development. Available for staging and testing."""
+    """
+    Add helper commands for development. Available for staging and testing.
+
+    Args:
+        app (Flask): The Flask application.
+    """
     import click
 
     @app.cli.command("create_db")

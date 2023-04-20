@@ -37,35 +37,35 @@ class User(UserMixin, BaseModel):
         self.email = email
         self.password_hashed = self._generate_password_hash(password_plaintext)
 
-    def is_password_correct(self, password_plaintext: str):
+    def is_password_correct(self, password_plaintext: str) -> bool:
         return check_password_hash(self.password_hashed, password_plaintext)
 
-    def set_password(self, password_plaintext: str):
+    def set_password(self, password_plaintext: str) -> None:
         self.password_hashed = self._generate_password_hash(password_plaintext)
 
     @staticmethod
-    def _generate_password_hash(password_plaintext):
+    def _generate_password_hash(password_plaintext) -> str:
         return generate_password_hash(password_plaintext)
 
     def __repr__(self):
         return f"<User: {self.email}>"
 
     @property
-    def is_authenticated(self):
+    def is_authenticated(self) -> bool:
         """Return True if the user has been successfully registered."""
         return True
 
     @property
-    def is_active(self):
+    def is_active(self) -> bool:
         """Always True, as all users are active."""
         return True
 
     @property
-    def is_anonymous(self):
+    def is_anonymous(self) -> bool:
         """Always False, as anonymous users aren't supported."""
         return False
 
-    def get_id(self):
+    def get_id(self) -> str:
         """Return the user ID as a unicode string (`str`)."""
         return str(self.id)
 
@@ -89,6 +89,7 @@ class SpaceObject:
     def __post_init__(self):
         AU_TO_KM_CONVERSION = 1.49e8
         self.dist = float(self.dist) * AU_TO_KM_CONVERSION
+        self.dist = round(self.dist, 2)
         self.dist_min = round(float(self.dist_min), 2)
         self.dist_max = float(self.dist_max)
         self.dist_min = float(self.dist_min)
@@ -110,6 +111,11 @@ class SpaceRecord(BaseModel):
         self.velocity = entry.v_inf
         self.distance = entry.dist
         self.closest = datetime.strptime(entry.cd, "%Y-%b-%d %H:%M")
+
+    @classmethod
+    def from_dict(cls, data) -> SpaceObject:
+        obj = SpaceObject(**data)
+        return cls(obj)
 
     def __repr__(self):
         return (

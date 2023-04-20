@@ -15,7 +15,7 @@ class Config:
 
 
 class DockerConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.getenv("DOCKER_DB")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DOCKER_DB")
 
 
 class StagingConfig(Config):
@@ -26,6 +26,7 @@ class StagingConfig(Config):
 
 class TestingConfig(StagingConfig):
     SQLALCHEMY_DATABASE_URI = "sqlite://"
+    WTF_CSRF_ENABLED = True
     TESTING = True
 
 
