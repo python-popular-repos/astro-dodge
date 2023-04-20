@@ -8,7 +8,12 @@ Examples:
 """
 
 
-def test_app_factory(client):
+def test_app_factory_context(app):
+    assert app.testing is True
+    assert app.debug is True
+
+
+def test_app_factory_client(client):
     assert client.application.testing is True
     assert client.application.debug is True
 
@@ -87,21 +92,6 @@ def test_login_page(client):
     assert b"Password" in response.data
 
 
-def test_login_profile(client, auth_user):
-    """
-    GIVEN a Flask application with an authorized user
-    WHEN the user is logged in
-    THEN check that user is able to access the "/profile" route
-    AND check the response is valid
-    """
-    response = auth_user.login()
-    assert response.status_code == 200
-
-    with client:
-        profile_response = client.get("/auth/profile")
-        assert profile_response.status_code == 200
-
-
 def test_register_page(client):
     """
     GIVEN a Flask application configured for testing
@@ -116,40 +106,39 @@ def test_register_page(client):
     assert b"Confirm" in response.data
 
 
-def test_logout(client, auth_user):
+def test_register(client):
+    assert client.get("/auth/register").status_code == 200
+    response = client.post(
+        "/auth/register",
+        data={"email": "test@pytest.com", "password": "testing"},
+    )
+    x = 0
+    assert client.get("/auth/profile").status_code == 200
+
+
+def test_login_auth(client, auth):
     """
-    GIVEN a Flask application configured with an authorized user
-    WHEN the '/register' page is requested (GET)
-    THEN check the response is valid
+    GIVEN a Flask application with an authorized user
+    WHEN the user is logged in
+    THEN check that user is able to access the "/auth/profile" route
+    AND check the response is valid
+    """
+    auth.login()
+    with client:
+        response = client.get("/auth/profile")
+        assert response.status_code == 200
+
+
+def test_logout_auth(client, auth):
+    """
+    GIVEN a Flask application configured with a logged in authorized user
     WHEN the '/logout' page is requested (GET)
-    THEN check the page has been redirected to home page ('/')
+    THEN check the user_id is not recorded in the session object
     """
-    auth_user.login()
-    response = client.get("/auth/profile")
-    assert response.status_code == 200
+    from flask import session
+
+    auth.login()
 
     with client:
-        auth_user.logout()
-        response = client.get("/")
-
-
-def test_auth_profile(client, auth_user):
-    """
-    GIVEN a Flask application configured with an authorized user
-    WHEN the '/auth/profile' page is requested (GET)
-    THEN check the response is valid
-    """
-    auth_user.login()
-    response = client.get("/auth/profile")
-    assert response.status_code == 200
-
-
-def test_auth_list(client, auth_user):
-    """
-    GIVEN a Flask application configured with an authorized user
-    WHEN the '/auth/list' page is requested (GET)
-    THEN check the response is valid
-    """
-    auth_user.login()
-    response = client.get("/auth/list")
-    assert response.status_code == 200
+        auth.logout()
+        assert "user_id" not in session

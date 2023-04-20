@@ -15,6 +15,7 @@ class Config:
 
 
 class DockerConfig(Config):
+    FLASK_ENV = "production"
     SQLALCHEMY_DATABASE_URI = os.environ.get("DOCKER_DB")
 
 
@@ -26,7 +27,7 @@ class StagingConfig(Config):
 
 class TestingConfig(StagingConfig):
     SQLALCHEMY_DATABASE_URI = "sqlite://"
-    WTF_CSRF_ENABLED = True
+    WTF_CSRF_ENABLED = False  # For submitting forms within the test client.
     TESTING = True
 
 
