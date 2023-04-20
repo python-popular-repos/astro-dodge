@@ -79,19 +79,6 @@ def test_list_page(client):
     assert b"<footer" in response.data
 
 
-def test_login_page(client):
-    """
-    GIVEN a Flask application configured for testing
-    WHEN the '/login' page is requested (GET)
-    THEN check the response is valid
-    """
-    response = client.get("/auth/login")
-    assert response.status_code == 200
-    assert b"Login" in response.data
-    assert b"Email" in response.data
-    assert b"Password" in response.data
-
-
 def test_register_page(client):
     """
     GIVEN a Flask application configured for testing
@@ -106,39 +93,114 @@ def test_register_page(client):
     assert b"Confirm" in response.data
 
 
-def test_register(client):
-    assert client.get("/auth/register").status_code == 200
+def test_register_invalid(client):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/auth/register' page is posted to (POST) with invalid data (missing password)
+    THEN check an error message is returned to the user
+    THEN check the page is not redirected
+    """
     response = client.post(
         "/auth/register",
-        data={"email": "test@pytest.com", "password": "testing"},
+        data={
+            "email": "test@pytest.com",
+            "password": "",
+            "confirm": "",
+        },  # Empty field is not allowed!
+        follow_redirects=True,
     )
-    x = 0
-    assert client.get("/auth/profile").status_code == 200
+    assert response.status_code == 200
+    assert b"Register" in response.data
+    assert b"Confirm" in response.data
 
 
-def test_login_auth(client, auth):
+def test_register_user(client):
+    response = client.post(
+        "/auth/register",
+        data={"email": "test@pytest.com", "password": "testing", "confirm": "testing"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Profile Page" in response.data
+    assert b"No Watchlist Items" in response.data
+
+
+def test_register_duplicate(client):
     """
-    GIVEN a Flask application with an authorized user
-    WHEN the user is logged in
-    THEN check that user is able to access the "/auth/profile" route
-    AND check the response is valid
+    GIVEN a Flask application configured for testing
+    WHEN the '/auth/register' page is posted to (POST) with the email address for an existing user
+    THEN check an error message is returned to the user
     """
-    auth.login()
-    with client:
-        response = client.get("/auth/profile")
-        assert response.status_code == 200
+    client.post(
+        "/auth/register",
+        data={"email": "test@pytest.com", "password": "testing", "confirm": "testing"},
+        follow_redirects=True,
+    )
+
+    client.get("/auth/logout", follow_redirects=True)
+
+    response = client.post(
+        "/auth/register",
+        data={
+            "email": "test@pytest.com",  # Duplicate email address
+            "password": "testing2",
+            "confirm": "testing2",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"has already been registered" in response.data
 
 
-def test_logout_auth(client, auth):
+def test_login_page(client):
     """
-    GIVEN a Flask application configured with a logged in authorized user
-    WHEN the '/logout' page is requested (GET)
-    THEN check the user_id is not recorded in the session object
+    GIVEN a Flask application configured for testing
+    WHEN the '/login' page is requested (GET)
+    THEN check the response is valid
     """
-    from flask import session
+    response = client.get("/auth/login")
+    assert response.status_code == 200
+    assert b"Login" in response.data
+    assert b"Email" in response.data
+    assert b"Password" in response.data
 
-    auth.login()
 
-    with client:
-        auth.logout()
-        assert "user_id" not in session
+def test_login_invalid(client, register_default_user):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/users/login' page is posted to (POST) with invalid credentials (incorrect password)
+    THEN check an error message is returned to the user
+    """
+    response = client.post(
+        "/auth/login",
+        data={"email": "test@pytest.com", "password": "incorrect_pw"},  # Incorrect!
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Incorrect login credentials." in response.data
+
+
+def test_login_when_logged_in_already(client, log_in_default_user):
+    """
+    GIVEN a Flask application configured for testing and the default user logged in
+    WHEN the '/auth/login' page is posted to (POST) with value credentials for the default user
+    THEN check a warning is returned to the user (already logged in)
+    """
+    response = client.post(
+        "/auth/login",
+        data={"email": "test@pytest.com", "password": "testing"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+
+
+def test_logout_invalid(client):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/auth/logout' page is posted to (POST)
+    THEN check that a 405 error is returned
+    """
+    client.get("/auth/logout", follow_redirects=True)
+    response = client.post("/auth/logout", follow_redirects=True)
+    assert response.status_code == 405
+    assert b"Method Not Allowed" in response.data

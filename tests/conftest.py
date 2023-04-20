@@ -71,46 +71,28 @@ def client():
 def register_default_user(client):
     # Register the default user
     client.post(
-        "/users/register",
-        data={"email": "test@pytest.com", "password": "testing"},
+        "/auth/register",
+        data={"email": "test@pytest.com", "password": "testing", "confirm": "testing"},
         follow_redirects=True,
     )
+    client.get("/auth/logout", follow_redirects=True)
     return
 
 
 @pytest.fixture(scope="function")
-def log_in_default_user(test_client, register_default_user):
+def log_in_default_user(client, register_default_user):
     # Log in the default user
     client.post(
         "/auth/login",
         data={"email": "test@pytest.com", "password": "testing"},
         follow_redirects=True,
     )
-
     yield
     # Log out the default user
-    test_client.get("/auth/logout", follow_redirects=True)
+    client.get("/auth/logout", follow_redirects=True)
 
 
 @pytest.fixture(scope="module")
 def runner(app):
     """A test runner for the app's Click commands."""
     return app.test_cli_runner()
-
-
-class AuthActions:
-    def __init__(self, client):
-        self._client = client
-
-    def login(self, email="test@pytest.com", password_plaintext="testing"):
-        return self._client.post(
-            "/auth/login", data={"email": email, "password": password_plaintext}
-        )
-
-    def logout(self):
-        return self._client.get("/auth/logout")
-
-
-@pytest.fixture(scope="function")
-def auth(client):
-    return AuthActions(client)

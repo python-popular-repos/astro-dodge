@@ -18,8 +18,8 @@ def register():
     if form.validate_on_submit():
         user_check = db.session.execute(
             db.select(User).filter_by(email=form.email.data)
-        ).scalar()
-        if user_check:
+        ).first()
+        if user_check is not None:
             flash(
                 f"{form.email.data} has already been registered. Select another email address."
             )
@@ -116,7 +116,6 @@ def profile():
 
 
 @auth_bp.route("/logout")
-@login_required
 def logout():
     logout_user()
     return redirect(url_for("home_bp.index"))
