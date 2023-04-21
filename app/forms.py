@@ -8,6 +8,15 @@ password_validators = [DataRequired(), Length(min=6, max=40)]
 
 
 class RegisterForm(FlaskForm):
+    """
+    Form for user registration.
+
+    Attributes:
+    email (StringField): Email address of the user.
+    password (PasswordField): Password of the user.
+    confirm (PasswordField): Password confirmation field.
+    submit (SubmitField): Submit button to create the user.
+    """
     email = StringField("Email", validators=email_validators)
     password = PasswordField("Password", validators=password_validators)
     confirm = PasswordField(
@@ -21,6 +30,15 @@ class RegisterForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
+    """
+    Form for user login.
+
+    Attributes:
+    email (StringField): Email address of the user.
+    password (PasswordField): Password of the user.
+    remember_me (BooleanField): Checkbox to remember the user.
+    submit (SubmitField): Submit button to log in.
+    """
     email = StringField("Email", validators=email_validators)
     password = PasswordField("Password", validators=[DataRequired()])
     remember_me = BooleanField("Remember Me")
@@ -28,6 +46,13 @@ class LoginForm(FlaskForm):
 
 
 class AstroForm(FlaskForm):
+    """
+    Form for selecting an AstroRecord object on the watchlist.
+
+    Attributes:
+    select (BooleanField): Checkbox to select the object.
+    submit (SubmitField): Submit button to confirm the selection.
+    """
     select = BooleanField(label="Select")
     submit = SubmitField()
 

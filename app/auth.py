@@ -9,6 +9,14 @@ auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
 
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    View function for registering a new user.
+
+    GET: Returns a RegisterForm instance and renders the registration template.
+    POST: Validates the RegisterForm data. If valid, creates a new user and redirects
+    the user to the profile page. If invalid, re-renders the registration template
+    with the errors displayed.
+    """
     if current_user.is_authenticated:  # type: ignore
         flash(f"{current_user} is logged in.")
         return redirect(url_for("auth_bp.profile"))
@@ -37,6 +45,14 @@ def register():
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    View function for logging in a user.
+
+    GET: Returns a LoginForm instance and renders the login template.
+    POST: Validates the LoginForm data. If valid, logs the user in and redirects
+    the user to the profile page. If invalid, re-renders the login template with
+    the errors displayed.
+    """
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.execute(
@@ -56,6 +72,15 @@ def login():
 @auth_bp.route("/list", methods=["GET", "POST"])
 @login_required
 def space_list():
+    """
+    View function for the space list.
+
+    GET: Returns a AstroForm instance and a list of SpaceRecord instances not in the
+    user's watchlist, and renders the space list template.
+    POST: Validates the AstroForm data. If valid, adds the selected SpaceRecord instances
+    to the user's watchlist and redirects to the profile page. If invalid, re-renders the
+    space list template with the errors displayed.
+    """
     form = AstroForm()
     subquery = db.session.query(Record.space_id).subquery()
     record = (
@@ -63,6 +88,13 @@ def space_list():
         .filter(~SpaceRecord.designation.in_(subquery))  # type: ignore
         .all()
     )
+    # subquery = db.session.query(Record.space_id).subquery()
+    # select_stmt = db.select([subquery])
+    # record = (
+    #     db.session.query(SpaceRecord)
+    #     .filter(~SpaceRecord.designation.in_(select_stmt))
+    #     .all()
+    # )
 
     if form.validate_on_submit():
         records = request.form.getlist("select")
@@ -85,6 +117,15 @@ def space_list():
 @auth_bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
+    """
+    View function for the user profile.
+
+    GET: Returns a AstroForm instance, a list of SpaceRecord instances in the user's watchlist,
+    and renders the profile template.
+    POST: Validates the AstroForm data. If valid, removes the selected SpaceRecord instances
+    from the user's watchlist and redirects to the profile page. If invalid, re-renders the
+    profile template with the errors displayed.
+    """
     form = AstroForm()
     stmt = db.select(SpaceRecord).join(Record.space)
     watchlist = db.session.execute(stmt).scalars().all()
@@ -117,5 +158,10 @@ def profile():
 
 @auth_bp.route("/logout")
 def logout():
+    """
+    View function for logging out a user.
+
+    Logs out the user and redirects to the home page.
+    """
     logout_user()
     return redirect(url_for("home_bp.index"))

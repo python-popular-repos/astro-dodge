@@ -1,10 +1,10 @@
+from datetime import datetime
 """
 This file (test_models.py) contains the unit tests for the models.py file.
 Examples:
 * Focus on testing small units of code in isolation 
   (ie database models, utility functions)
 """
-
 
 def test_new_user(new_user):
     """
@@ -42,3 +42,4 @@ def test_user_id(new_user):
     assert isinstance(new_user.get_id(), str)
     assert not isinstance(new_user.get_id(), int)
     assert new_user.get_id() == "66"
+

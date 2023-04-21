@@ -21,12 +21,16 @@ def about() -> str:
 
 @home_bp.route("/list", methods=["GET"])
 def space_list() -> str:
+    """Display a list of space records.
+
+    Returns:
+        str: Rendered HTML template for the space records list page.
+    """
     try:
         if current_user.is_authenticated:  # type: ignore
             redirect(url_for("auth_bp.space_list"))
 
-        stmt = db.select(SpaceRecord).limit(5)
-        query = db.session.execute(stmt).scalars()
+        query = db.session.query(SpaceRecord).limit(5).all()
 
     except Exception as e:
         print(f"An error occurred: {e}")

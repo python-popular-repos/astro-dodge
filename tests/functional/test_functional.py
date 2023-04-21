@@ -9,11 +9,30 @@ Examples:
 
 
 def test_app_factory_context(app):
+    """
+    Unit test for the app factory function to ensure that the app's testing and debug properties are set to True.
+
+    Args:
+        app: The Flask application instance to be tested.
+
+    Returns:
+        None
+    """
     assert app.testing is True
     assert app.debug is True
 
 
 def test_app_factory_client(client):
+    """
+    Unit test for the app factory function to ensure that the Flask test client's application testing and debug properties
+    are set to True.
+
+    Args:
+        client: The Flask test client instance to be tested.
+
+    Returns:
+        None
+    """
     assert client.application.testing is True
     assert client.application.debug is True
 
@@ -204,3 +223,25 @@ def test_logout_invalid(client):
     response = client.post("/auth/logout", follow_redirects=True)
     assert response.status_code == 405
     assert b"Method Not Allowed" in response.data
+
+
+def test_list_auth(client, log_in_default_user):
+    response = client.get("/auth/list")
+    assert response.status_code == 200
+
+
+def test_list_empty_post(client, log_in_default_user):
+    response = client.post("/auth/list", data={}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Nothing selected to be added to the watchlist" in response.data
+
+
+def test_profile_auth(client, log_in_default_user):
+    response = client.get("/auth/profile")
+    assert response.status_code == 200
+
+
+def test_profile_empty_post(client, log_in_default_user):
+    response = client.post("/auth/profile", data={}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Nothing selected." in response.data
