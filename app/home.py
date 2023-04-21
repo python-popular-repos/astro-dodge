@@ -28,7 +28,7 @@ def space_list() -> str:
     """
 
     if current_user.is_authenticated:  # type: ignore
-        return redirect(url_for("auth_bp.space_list"))
+        return redirect(url_for("auth_bp.space_list"))  # type: ignore
 
     query = db.session.query(SpaceRecord).limit(5).all()
 

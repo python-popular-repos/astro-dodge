@@ -53,6 +53,10 @@ def login():
     the user to the profile page. If invalid, re-renders the login template with
     the errors displayed.
     """
+    if current_user.is_authenticated:  # type: ignore
+        flash(f"{current_user} is logged in.")
+        return redirect(url_for("auth_bp.profile"))
+
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.execute(
@@ -82,19 +86,13 @@ def space_list():
     space list template with the errors displayed.
     """
     form = AstroForm()
-    subquery = db.session.query(Record.space_id).subquery()
+    # get a list of SpaceRecord instances not in the user's watchlist
     record = (
         db.session.query(SpaceRecord)
-        .filter(~SpaceRecord.designation.in_(subquery))  # type: ignore
+        .join(Record, SpaceRecord.designation == Record.space_id, isouter=True)
+        .filter(Record.user_id != current_user.id)  # type: ignore
         .all()
     )
-    # subquery = db.session.query(Record.space_id).subquery()
-    # select_stmt = db.select([subquery])
-    # record = (
-    #     db.session.query(SpaceRecord)
-    #     .filter(~SpaceRecord.designation.in_(select_stmt))
-    #     .all()
-    # )
 
     if form.validate_on_submit():
         records = request.form.getlist("select")
@@ -130,7 +128,7 @@ def profile():
     stmt = db.select(SpaceRecord).join(Record.space)
     watchlist = db.session.execute(stmt).scalars().all()
 
-    watchlist = watchlist if len(watchlist) > 0 else None
+    watchlist = watchlist or None
 
     if form.validate_on_submit():
         records = request.form.getlist("select")

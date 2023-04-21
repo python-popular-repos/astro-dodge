@@ -17,6 +17,7 @@ class RegisterForm(FlaskForm):
     confirm (PasswordField): Password confirmation field.
     submit (SubmitField): Submit button to create the user.
     """
+
     email = StringField("Email", validators=email_validators)
     password = PasswordField("Password", validators=password_validators)
     confirm = PasswordField(
@@ -39,6 +40,7 @@ class LoginForm(FlaskForm):
     remember_me (BooleanField): Checkbox to remember the user.
     submit (SubmitField): Submit button to log in.
     """
+
     email = StringField("Email", validators=email_validators)
     password = PasswordField("Password", validators=[DataRequired()])
     remember_me = BooleanField("Remember Me")
@@ -53,6 +55,7 @@ class AstroForm(FlaskForm):
     select (BooleanField): Checkbox to select the object.
     submit (SubmitField): Submit button to confirm the selection.
     """
+
     select = BooleanField(label="Select")
     submit = SubmitField()
 

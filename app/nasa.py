@@ -1,7 +1,6 @@
 import requests
 from typing import List
-from app import db
-from app.models import SpaceObject, SpaceRecord
+from app.models import SpaceObject
 
 
 def _fetch():
