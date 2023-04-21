@@ -22,7 +22,7 @@ Astro Dodge is hosted on [DigitalOcean](https://www.digitalocean.com/).
 
 If you have Docker installed, you can run the following commands to build and start the Astro Dodge web application:
 
-1. Clone the repository: `git clone https://github.com/username/astro-dodge.git`
+1. Clone the repository: `git clone https://github.com/kev-odin/astro-dodge.git`
 2. Build the Docker image: `docker build -t astro-dodge .`
 3. Run the Docker container: `docker run -p 5000:5000 astro-dodge`
 
@@ -32,7 +32,7 @@ This will start the Astro Dodge web application and it will be accessible at htt
 
 If you don't have Docker installed, you can follow these steps to install and run the Astro Dodge web application:
 
-1. Clone the repository: `git clone https://github.com/username/astro-dodge.git`
+1. Clone the repository: `git clone https://github.com/kev-odin/astro-dodge.git`
 2. Install dependencies using Poetry: `poetry install`
 3. Start the development server: `poetry run flask run`
 
@@ -63,10 +63,6 @@ Astro Dodge uses GitHub Actions for Continuous Integration and Continuous Deploy
 ## Contributing
 
 If you would like to contribute to Astro Dodge, please submit a pull request.
-
-## Feedback
-
-If you encounter any issues or have suggestions for improvements, please open an issue or send an email to the developer at example@example.com.
 
 ## License
 
