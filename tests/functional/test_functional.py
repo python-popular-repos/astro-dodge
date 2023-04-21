@@ -37,6 +37,22 @@ def test_app_factory_client(client):
     assert client.application.debug is True
 
 
+def test_cli_create_db(runner):
+    result = runner.invoke(args="create_db")
+    assert "Database Created." in result.output
+
+
+def test_cli_drop_db(runner):
+    result = runner.invoke(args="drop_db")
+    assert "Database Dropped." in result.output
+
+
+def test_cli_seed_db(runner):
+    runner.invoke(args="create_db")
+    result = runner.invoke(args="seed_db")
+    assert "User added to database." in result.output
+
+
 def test_index_page(client):
     """
     GIVEN a Flask application configured for testing
@@ -184,6 +200,20 @@ def test_login_page(client):
     assert b"Password" in response.data
 
 
+def test_login_redirect(client, log_in_default_user):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/users/login' page is posted to (POST) with invalid credentials (incorrect password)
+    THEN check an error message is returned to the user
+    """
+    response = client.get(
+        "/list",
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Submit" in response.data
+
+
 def test_login_invalid(client, register_default_user):
     """
     GIVEN a Flask application configured for testing
@@ -223,6 +253,17 @@ def test_logout_invalid(client):
     response = client.post("/auth/logout", follow_redirects=True)
     assert response.status_code == 405
     assert b"Method Not Allowed" in response.data
+
+
+def test_unauthorized(client):
+    """
+    GIVEN a Flask application configured for testing
+    WHEN the '/auth/profile' page is requested (GET)
+    THEN check that redirect to the login page returned
+    """
+    response = client.post("/auth/profile", follow_redirects=True)
+    assert b"You are not permitted to view this page." in response.data
+    assert b"Login" in response.data
 
 
 def test_list_auth(client, log_in_default_user):

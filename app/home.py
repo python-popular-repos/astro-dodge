@@ -26,14 +26,10 @@ def space_list() -> str:
     Returns:
         str: Rendered HTML template for the space records list page.
     """
-    try:
-        if current_user.is_authenticated:  # type: ignore
-            redirect(url_for("auth_bp.space_list"))
 
-        query = db.session.query(SpaceRecord).limit(5).all()
+    if current_user.is_authenticated:  # type: ignore
+        return redirect(url_for("auth_bp.space_list"))
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return render_template("error.html", title="Error")
+    query = db.session.query(SpaceRecord).limit(5).all()
 
-    return render_template("list.html", space_list=query, title="Space List")
+    return render_template("list.html", space_list=query, title="Space List", form=None)

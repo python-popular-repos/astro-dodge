@@ -97,7 +97,7 @@ def add_commands(app: Flask):
     def drop_db():
         """Drop database tables."""
         db.drop_all()
-        click.echo("Datebase Dropped.")
+        click.echo("Database Dropped.")
 
     @app.cli.command("seed_db")
     def seed_db():

@@ -12,6 +12,7 @@
     </tr>
   </thead>
   {% if current_user.is_authenticated %}
+  {% if form %}
   <form method="POST">
     {{ form.hidden_tag() }}
     <tbody>
@@ -37,6 +38,7 @@
       </tr>
     </tfoot>
   </form>
+  {% endif %}
   {% else %}
   <tbody>
     {% for record in space_list %}
