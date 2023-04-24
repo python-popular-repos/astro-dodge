@@ -29,3 +29,13 @@ jobs:
         push: true
         tags: ghcr.io/${{ github.repository }}:latest
 
+    - name: Set up doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        version: latest
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+    - name: Deploy Docker image
+      run: |
+        doctl compute ssh ${{ secrets.DROPLET_NAME }} --ssh-command "docker pull ghcr.io/${{ github.repository }}:latest"
