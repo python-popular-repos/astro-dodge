@@ -1,5 +1,4 @@
 from flask_login import UserMixin
-from sqlalchemy.orm import backref
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 from dataclasses import dataclass
@@ -106,6 +105,8 @@ class SpaceRecord(BaseModel):
     distance = db.Column(db.Float)
     closest = db.Column(db.DateTime)
 
+    records = db.relationship("Record", backref="space")
+
     def __init__(self, entry: SpaceObject):
         self.designation = entry.des
         self.velocity = entry.v_inf
@@ -128,8 +129,9 @@ class Record(BaseModel):
     record_id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     space_id = db.Column(db.String, db.ForeignKey("space.designation"))
-    space = db.relationship("SpaceRecord", backref=backref("space"))
-    user = db.relationship("User", backref=backref("users"))
+
+    user = db.relationship("User", backref="records")
+    space_record = db.relationship("SpaceRecord", backref="space")
 
     def __init__(self, user: int, space: str):
         self.user_id = user

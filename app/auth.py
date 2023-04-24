@@ -1,3 +1,4 @@
+from operator import and_
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_user, login_required, logout_user, current_user
 from app.forms import RegisterForm, LoginForm, AstroForm
@@ -87,10 +88,10 @@ def space_list():
     """
     form = AstroForm()
     # get a list of SpaceRecord instances not in the user's watchlist
+    subquery = db.session.query(Record.space_id).subquery()
     record = (
         db.session.query(SpaceRecord)
-        .join(Record, SpaceRecord.designation == Record.space_id, isouter=True)
-        .filter(Record.user_id != current_user.id)  # type: ignore
+        .filter(~SpaceRecord.designation.in_(subquery))  # type: ignore
         .all()
     )
 

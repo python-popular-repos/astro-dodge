@@ -1,6 +1,7 @@
 import requests
 from typing import List
-from app.models import SpaceObject
+from app.models import SpaceObject, SpaceRecord
+from app import db
 
 
 def _fetch():
@@ -26,9 +27,9 @@ def format_space_object(
     return space
 
 
-# def seed_db():
-#     data = format_space_object()
-#     for item in data:
-#         data_base = SpaceRecord(item)
-#         db.session.add(data_base)
-#     db.session.commit()
+def seed_db():
+    data = format_space_object()
+    for item in data:
+        data_base = SpaceRecord(item)
+        db.session.add(data_base)
+    db.session.commit()

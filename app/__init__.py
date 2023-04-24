@@ -103,6 +103,7 @@ def add_commands(app: Flask):
     def seed_db():
         """Add single user to database."""
         from app.models import User, Record
+        from app.nasa import seed_db
 
         seeded_user = User(email="flask@cli.com", password_plaintext="testing")
         seeded_record = Record(user=123, space="Vulcan")
@@ -110,6 +111,8 @@ def add_commands(app: Flask):
         db.session.add(seeded_record)
         db.session.commit()
         click.echo("User added to database.")
+        seed_db()
+        click.echo("Astros added to database.")
 
     app.cli.add_command(create_db)
     app.cli.add_command(drop_db)
