@@ -58,7 +58,7 @@ To add a screenshot, create an `assets/images` folder in your repository and upl
     ![alt text](assets/images/screenshot.png)
     ```
  -->
- ![astro-home](assets/images/astro-home.gif)
+ ![astro-home](assets/images/astro-home.webp)
 ### Mobile-Friendly Design
 
 Astro Dodge is designed to be mobile-friendly, with responsive design that ensures the application looks great and functions well on any device.
